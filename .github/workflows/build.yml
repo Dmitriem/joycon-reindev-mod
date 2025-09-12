@@ -55,6 +55,9 @@ jobs:
       - name: Build jar
         run: ./gradlew clean jar --no-daemon
 
+      - name: Show build output
+        run: ls -R build || true
+
       - name: Upload mod jar
         uses: actions/upload-artifact@v4
         with:

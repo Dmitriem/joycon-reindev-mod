@@ -10,15 +10,16 @@ repositories {
     mavenCentral()
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 jar {
-    manifest {
-        attributes(
-                'Implementation-Title': 'JoyCon ReIndev Mod',
-                'Implementation-Version': version
-        )
-    }
+    archiveBaseName.set("joycon-reindev-mod")
+    archiveVersion.set("1.0.0")
+
     from('src/main/resources') {
-        into '/'
+        into('/')
     }
 }
 
@@ -29,4 +30,5 @@ jar {
         into('/')
     }
 }
+
 

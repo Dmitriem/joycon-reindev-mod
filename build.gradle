@@ -21,3 +21,12 @@ jar {
         into '/'
     }
 }
+
+jar {
+    archiveBaseName.set("joycon-reindev-mod")
+    archiveVersion.set("1.0.0")
+    from('src/main/resources') {
+        into('/')
+    }
+}
+

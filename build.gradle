@@ -4,7 +4,7 @@ plugins {
 
 group = 'com.example'
 version = '1.0.0'
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
@@ -22,13 +22,3 @@ jar {
         into('/')
     }
 }
-
-jar {
-    archiveBaseName.set("joycon-reindev-mod")
-    archiveVersion.set("1.0.0")
-    from('src/main/resources') {
-        into('/')
-    }
-}
-
-

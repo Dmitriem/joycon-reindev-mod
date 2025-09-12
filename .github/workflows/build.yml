@@ -63,3 +63,6 @@ jobs:
 
       - name: List jars
         run: ls -R build/libs || true
+
+      - name: List build/libs
+        run: ls -R build/libs || true

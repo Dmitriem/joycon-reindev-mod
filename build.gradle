@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '1.0.0'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Implementation-Title': 'JoyCon ReIndev Mod',
+                'Implementation-Version': version
+        )
+    }
+    from('src/main/resources') {
+        into '/'
+    }
+}

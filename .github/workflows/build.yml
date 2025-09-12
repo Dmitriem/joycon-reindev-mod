@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: joycon-reindev-mod
-          path: build/libs/**/*.jar
+          path: build/libs/joycon-reindev-mod-1.0.0.jar
 
       - name: List jars
         run: ls -R build/libs || true

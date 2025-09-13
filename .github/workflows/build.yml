@@ -55,6 +55,9 @@ jobs:
       - name: Build jar
         run: ./gradlew clean jar --no-daemon
 
+      - name: Show build dir
+        run: ls -R . || true
+
       - name: Show build output
         run: ls -R build || true
 

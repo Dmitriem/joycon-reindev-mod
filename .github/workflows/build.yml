@@ -76,11 +76,12 @@ jobs:
       - name: Build jar (with detailed logging)
         run: |
           set -e
-          if [ -x ./gradlew ]; then
-            echo "Using project gradlew"
+          # gradlew must be non-empty; otherwise prefer system gradle
+          if [ -f ./gradlew ] && [ -s ./gradlew ] && [ -x ./gradlew ]; then
+            echo "Using project gradlew (non-empty and executable)"
             ./gradlew clean jar --no-daemon --stacktrace --info 2>&1 | tee gradle-output.txt || true
           else
-            echo "gradlew not found — installing system gradle"
+            echo "gradlew missing/empty/not executable — using system gradle"
             sudo apt-get update
             sudo apt-get install -y gradle
             gradle clean jar --stacktrace --info 2>&1 | tee gradle-output.txt || true

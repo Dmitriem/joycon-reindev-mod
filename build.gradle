@@ -18,12 +18,23 @@ tasks.withType(JavaCompile) {
 jar {
     archiveBaseName.set("joycon-reindev-mod")
     archiveVersion.set("1.0.0")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+    // !!! важно: прямо включаем скомпилированные классы в jar
+    from(sourceSets.main.output)
+
+    // включаем ресурсы (в т.ч. нативный бинарь, который CI скопировал в resources)
     from('src/main/resources') {
         into('/')
+    }
+
+    doFirst {
+        println ">>> jar task started. will write to: ${archiveFile.get().asFile}"
+        println ">>> Source sets output exists? " + file('build/classes/java/main').exists()
     }
 }
 
 dependencies {
     compileOnly files('libs/b1.7.3.jar')
 }
+

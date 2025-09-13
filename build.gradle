@@ -23,3 +23,7 @@ jar {
         into('/')
     }
 }
+
+dependencies {
+    compileOnly files('libs/b1.7.3.jar')
+}

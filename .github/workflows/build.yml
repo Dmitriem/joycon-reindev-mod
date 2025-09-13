@@ -72,3 +72,38 @@ jobs:
 
       - name: List build/libs
         run: ls -R build/libs || true
+        
+      - name: Build jar (with detailed logging)
+        run: |
+          set -e
+          if [ -x ./gradlew ]; then
+            echo "Using project gradlew"
+            ./gradlew clean jar --no-daemon --stacktrace --info 2>&1 | tee gradle-output.txt || true
+          else
+            echo "gradlew not found — installing system gradle"
+            sudo apt-get update
+            sudo apt-get install -y gradle
+            gradle clean jar --stacktrace --info 2>&1 | tee gradle-output.txt || true
+          fi
+
+      - name: Upload gradle log
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-log
+          path: gradle-output.txt
+
+      - name: Show build tree (debug)
+        run: |
+          echo "=== pwd ==="
+          pwd
+          echo "=== ls root ==="
+          ls -la
+          echo "=== ls libs ==="
+          ls -la libs || true
+          echo "=== ls src ==="
+          ls -R src || true
+          echo "=== ls build ==="
+          ls -R build || true
+          echo "=== jar candidates ==="
+          ls -la build/libs || true
+

@@ -32,10 +32,11 @@ jobs:
           path: src/main/resources/native/linux-aarch64/joycond
 
   build-java:
-    runs-on: ubuntu-latest
-    needs: build-native
-    steps:
-      - uses: actions/checkout@v4
+     runs-on: ubuntu-latest
+     needs: build-native
+     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Download native artifact
         uses: actions/download-artifact@v4
@@ -43,40 +44,20 @@ jobs:
           name: joycond-bin
           path: src/main/resources/native/linux-aarch64
 
+      - name: Ensure gradlew executable if present
+        run: |
+          if [ -f ./gradlew ]; then chmod +x ./gradlew; fi
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Build jar
-        run: ./gradlew clean jar --no-daemon
-
-      - name: Show build dir
-        run: ls -R . || true
-
-      - name: Show build output
-        run: ls -R build || true
-
-      - name: Upload mod jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: joycon-reindev-mod
-          path: build/libs/joycon-reindev-mod-1.0.0.jar
-
-      - name: List jars
-        run: ls -R build/libs || true
-
-      - name: List build/libs
-        run: ls -R build/libs || true
-        
       - name: Build jar (with detailed logging)
         run: |
           set -e
-          # gradlew must be non-empty; otherwise prefer system gradle
+          # если gradlew есть и не пустой и исполняемый — используем его
           if [ -f ./gradlew ] && [ -s ./gradlew ] && [ -x ./gradlew ]; then
             echo "Using project gradlew (non-empty and executable)"
             ./gradlew clean jar --no-daemon --stacktrace --info 2>&1 | tee gradle-output.txt || true
@@ -84,6 +65,9 @@ jobs:
             echo "gradlew missing/empty/not executable — using system gradle"
             sudo apt-get update
             sudo apt-get install -y gradle
+            # гарантируем, что gradle использует JDK 17:
+            export JAVA_HOME=$(java -XshowSettings:properties -version 2>&1 | awk -F': ' '/java.home/ {print $2}' | head -n1)
+            gradle --version
             gradle clean jar --stacktrace --info 2>&1 | tee gradle-output.txt || true
           fi
 
@@ -95,16 +79,16 @@ jobs:
 
       - name: Show build tree (debug)
         run: |
-          echo "=== pwd ==="
-          pwd
-          echo "=== ls root ==="
-          ls -la
-          echo "=== ls libs ==="
-          ls -la libs || true
-          echo "=== ls src ==="
-          ls -R src || true
-          echo "=== ls build ==="
-          ls -R build || true
-          echo "=== jar candidates ==="
-          ls -la build/libs || true
+          echo "=== pwd ==="; pwd
+          echo "=== ls root ==="; ls -la
+          echo "=== ls libs ==="; ls -la libs || true
+          echo "=== ls src ==="; ls -R src || true
+          echo "=== ls build ==="; ls -R build || true
+          echo "=== jar candidates ==="; ls -la build/libs || true
+
+      - name: Upload mod jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: joycon-reindev-mod
+          path: build/libs/**/*.jar
 

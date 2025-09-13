@@ -14,6 +14,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+/* Гарантируем, что JAR будет собран. */
 jar {
     archiveBaseName.set("joycon-reindev-mod")
     archiveVersion.set("1.0.0")
